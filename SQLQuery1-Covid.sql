@@ -39,11 +39,35 @@ WHERE Location like '%states%'
 order by total_cases Desc;
 
 
---which countries have the highest infection rate?
+--which countries hav
+Select Location, population, max(total_cases) as MaxCases, max(round((cast(total_cases as float)/cast(population as float))*100,2)) as MaxPercentage
+from [dbo].[CovidDeaths]
+group by Location, population
+order by MaxPercentage Desc;e the highest infection rate?
 
 
 --which countries have the highest death rate?
+Select Location, population, max(total_deaths) as MaxDeaths
+from [dbo].[CovidDeaths]
+where continent is not null
+group by Location, population
+order by MaxDeaths Desc;
 
+--which continents have the highest death count?
+
+Select Location, population, max(total_deaths) as MaxDeaths
+from [dbo].[CovidDeaths]
+where continent is null and population is not null
+group by Location, population
+order by MaxDeaths Desc;
+
+
+--what are total number of cases, total death number and total death percentage in the world:
+
+
+Select sum(new_cases) as total_cases, sum(new_deaths) as total_deaths, round(sum(cast(new_deaths as float))/ sum(cast(new_cases as float)),4)*100 as DeathPercentage
+From [dbo].[CovidDeaths]
+where continent is not null;
 
 
 
