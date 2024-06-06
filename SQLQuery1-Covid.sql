@@ -1,7 +1,7 @@
 /*
 Covid 19 Data Exploration 
 
-Skills used: Aggregate Functions, Joins,Converting Data Types
+Skills used: Aggregate Functions, Joins,Converting Data Types, CTEs, Temp tables
 
 */
 Use[Covid] ;
