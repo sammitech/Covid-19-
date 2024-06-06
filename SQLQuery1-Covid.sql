@@ -92,7 +92,45 @@ from PopVsVac;
 --How many people in each country got vaccinated at least once?
 --using Temp table
 
+DROP TABLE IF EXISTS #PercentPeopleVaccinated
+Create table #PercentPeopleVaccinated
+(continent nvarchar(255),
+location nvarchar(255),
+Date date,
+population numeric,
+New_vaccinations numeric,
+RollingPeopleVaccinated numeric
+)
 
+Insert into #PercentPeopleVaccinated
+SELECT DEAT.continent, DEAT.location, DEAT.date, DEAT.population, VACCIN.new_vaccinations,
+SUM(VACCIN.new_vaccinations) OVER (Partition by DEAT.location order by DEAT.location, DEAT.date) as Rolling_people_vaccinated
+from [dbo].[CovidDeaths] as DEAT	
+join [dbo].[CovidVaccinations] AS VACCIN
+on DEAT.location = VACCIN.location
+and DEAT.date = VACCIN.date
+where DEAT.continent is not null 
+group by DEAT.continent, DEAT.location, DEAT.date, DEAT.population, VACCIN.new_vaccinations
+
+select *
+from #PercentPeopleVaccinated;
+
+
+-- Creating View to store data for visualization
+
+CREATE VIEW PercentPeopleVaccinated AS 
+SELECT DEAT.continent, DEAT.location, DEAT.date, DEAT.population, VACCIN.new_vaccinations,
+SUM(VACCIN.new_vaccinations) OVER (Partition by DEAT.location order by DEAT.location, DEAT.date) as Rolling_people_vaccinated
+from [dbo].[CovidDeaths] as DEAT	
+join [dbo].[CovidVaccinations] AS VACCIN
+on DEAT.location = VACCIN.location
+and DEAT.date = VACCIN.date
+where DEAT.continent is not null 
+group by DEAT.continent, DEAT.location, DEAT.date, DEAT.population, VACCIN.new_vaccinations
+
+
+SELECT * 
+FROM PercentPeopleVaccinated
 
 
 
