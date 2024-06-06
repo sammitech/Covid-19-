@@ -71,6 +71,31 @@ where continent is not null;
 
 
 
+--How many people in each country got vaccinated at least once?
+--using CTE
+WITH PopVsVac (continent, location, date, population, new_vaccinations, Rolling_people_vaccinated)
+as 
+(SELECT DEAT.continent, DEAT.location, DEAT.date, DEAT.population, VACCIN.new_vaccinations,
+SUM(VACCIN.new_vaccinations) OVER (Partition by DEAT.location order by DEAT.location, DEAT.date) as Rolling_people_vaccinated
+from [dbo].[CovidDeaths] as DEAT	
+join [dbo].[CovidVaccinations] AS VACCIN
+on DEAT.location = VACCIN.location
+and DEAT.date = VACCIN.date
+where DEAT.continent is not null 
+group by DEAT.continent, DEAT.location, DEAT.date, DEAT.population, VACCIN.new_vaccinations
+)
+select *, CAST(Rolling_people_vaccinated AS FLOAT)/CAST(population AS FLOAT)*100 AS percentage_vaccinated, 
+MAX(Rolling_people_vaccinated) OVER (PARTITION BY Location) as Max_people_vaccinated
+from PopVsVac;
+
+
+--How many people in each country got vaccinated at least once?
+--using Temp table
+
+
+
+
+
 
 
 
