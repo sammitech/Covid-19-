@@ -56,6 +56,13 @@ from [dbo].[CovidDeaths]
 group by Location, population
 order by MaxPercentage Desc;
 
+--which countries have the highest infection rate per date?
+
+Select Location, population, date, max(total_cases) as MaxCases, max(round((cast(total_cases as float)/cast(population as float))*100,2)) as MaxPercentage
+from [dbo].[CovidDeaths]
+group by Location, population, date
+order by MaxPercentage Desc;
+
 
 --which countries have the highest death rate?
 Select Location, population, max(total_deaths) as MaxDeaths
