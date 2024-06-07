@@ -38,12 +38,23 @@ from [dbo].[CovidDeaths]
 WHERE Location like '%states%'
 order by total_cases Desc;
 
+--What was the total death rate in each continent?
 
---which countries hav
+SELECT Location, SUM(new_deaths) as total_deaths_continent
+from [dbo].[CovidDeaths]
+where continent is null
+and location not in ('World', 'European Union', 'International')
+group by location
+order by total_deaths_continent desc;
+
+
+
+
+--which countries havee the highest infection rate?
 Select Location, population, max(total_cases) as MaxCases, max(round((cast(total_cases as float)/cast(population as float))*100,2)) as MaxPercentage
 from [dbo].[CovidDeaths]
 group by Location, population
-order by MaxPercentage Desc;e the highest infection rate?
+order by MaxPercentage Desc;
 
 
 --which countries have the highest death rate?
@@ -62,6 +73,8 @@ group by Location, population
 order by MaxDeaths Desc;
 
 
+
+
 --what are total number of cases, total death number and total death percentage in the world:
 
 
@@ -71,8 +84,8 @@ where continent is not null;
 
 
 
---How many people in each country got vaccinated at least once?
---using CTE
+--How many people in each country got vaccinated at least once? using CTE
+
 WITH PopVsVac (continent, location, date, population, new_vaccinations, Rolling_people_vaccinated)
 as 
 (SELECT DEAT.continent, DEAT.location, DEAT.date, DEAT.population, VACCIN.new_vaccinations,
